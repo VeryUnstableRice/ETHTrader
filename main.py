@@ -1,16 +1,24 @@
-# This is a sample Python script.
+from tradingenv import load_data, TradingEnv
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+if __name__ == "__main__":
+    # Load data automatically
+    data = load_data(symbol='ETHUSDT', interval='6h')
 
+    # Initialize the trading environment
+    env = TradingEnv(
+        data,
+        initial_balance=10,      # Easily changeable initial balance
+        lookback_window_size=50,    # Number of past timesteps in the observation
+        trading_interval='6h',      # Easily changeable trading interval
+        use_bnb_discount=True       # Apply BNB fee discount (True/False)
+    )
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    # Reset the environment to start a new episode
+    obs = env.reset()
+    done = False
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharms')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    while not done:
+        # Random agent: choose actions randomly between -1 and 1
+        action = env.action_space.sample()
+        obs, reward, done, info = env.step(action)
+        env.render()

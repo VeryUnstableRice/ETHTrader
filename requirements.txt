@@ -1,0 +1,5 @@
+gym
+backtrader
+pandas
+numpy
+python-binance
