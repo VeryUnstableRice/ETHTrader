@@ -17,13 +17,15 @@ if __name__ == "__main__":
     )
 
     # Reset the environment to start a new episode
+    action_count = 100
+
     obs = env.reset()
     balance = env.balance
     networth = env.total_asset
     crypto_held = env.crypto_held
     done = False
 
-    trader = eth_trader.TradingTransformer()
+    trader = eth_trader.TradingTransformer(n_actions=action_count)
 
     while not done:
         obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0)
@@ -42,4 +44,4 @@ if __name__ == "__main__":
         balance = env.balance
         networth = env.total_asset
 
-        env.render()
+        #env.render()
