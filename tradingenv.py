@@ -47,7 +47,7 @@ class TradingEnv(gym.Env):
         episode_length = 7 * steps_per_day  # 7 days per episode
 
         max_start = len(self.data) - self.lookback_window_size - episode_length
-        self.start_index = random.randint(self.lookback_window_size, max_start)
+        self.start_index = random.randint(self.lookback_window_size,  max_start)
         self.end_index = self.start_index + episode_length
 
         self.current_step = self.start_index
@@ -62,7 +62,7 @@ class TradingEnv(gym.Env):
         return self._next_observation()
 
     def _next_observation(self):
-        obs = self.data.iloc[
+        obs = self.data['Close'].iloc[
             self.current_step - self.lookback_window_size : self.current_step
         ].values
         return obs
