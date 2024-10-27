@@ -9,13 +9,13 @@ import torch.nn.functional as F
 
 
 def positional_encoding(positions, d_model=64):
-    # Create a tensor to store the positional encodings
+    # Create a tensor to store the positional encodings on the same device as positions
     batch_size = positions.size(0)
-    pe = torch.zeros(batch_size, d_model)
+    pe = torch.zeros(batch_size, d_model, device=positions.device)  # Set device to match positions
 
     # Compute the positional encodings
     position = positions.float()  # Convert positions to float for division
-    div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
+    div_term = torch.exp(torch.arange(0, d_model, 2).float().to(positions.device) * (-math.log(10000.0) / d_model))
     pe[:, 0::2] = torch.sin(position * div_term)
     pe[:, 1::2] = torch.cos(position * div_term)
 

@@ -71,12 +71,13 @@ class TradingEnv(gym.Env):
         self._take_action(action)
 
         self.current_step += 1
+        reward = 0  # Reward can be implemented later
 
         if self.current_step >= self.end_index:
             self.done = True
+            reward = (self.total_asset - self.initial_balance) / (self.initial_balance * 0.5)
 
         obs = self._next_observation()
-        reward = 0  # Reward can be implemented later
 
         return obs, reward, self.done, {}
 
