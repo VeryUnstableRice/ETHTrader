@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b2517c53-6dc3-4b7b-bbf8-b506a1876d3d" name="Changes" comment="almost there">
+    <list default="true" id="b2517c53-6dc3-4b7b-bbf8-b506a1876d3d" name="Changes" comment="no thinking and no saving yet.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/eth_trader.py" beforeDir="false" afterPath="$PROJECT_DIR$/eth_trader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ppo_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/ppo_agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tradingenv.py" beforeDir="false" afterPath="$PROJECT_DIR$/tradingenv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +133,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730049113250</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="no thinking and no saving yet.">
+      <option name="closed" value="true" />
+      <created>1730051031629</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1730051031629</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -152,6 +160,7 @@
     <MESSAGE value="sdfsdf" />
     <MESSAGE value="gym added" />
     <MESSAGE value="almost there" />
-    <option name="LAST_COMMIT_MESSAGE" value="almost there" />
+    <MESSAGE value="no thinking and no saving yet." />
+    <option name="LAST_COMMIT_MESSAGE" value="no thinking and no saving yet." />
   </component>
 </project>

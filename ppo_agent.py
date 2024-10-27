@@ -2,9 +2,10 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.distributions import Categorical
+from torch.utils.tensorboard import SummaryWriter  # Import TensorBoard writer
 
 class PPOAgent:
-    def __init__(self, policy, device, lr=3e-4, gamma=0.99, clip_epsilon=0.2, update_epochs=10, batch_size=64):
+    def __init__(self, policy, device, writer, lr=3e-4, gamma=0.99, clip_epsilon=0.2, update_epochs=10, batch_size=64):
         self.policy = policy
         self.optimizer = optim.Adam(self.policy.parameters(), lr=lr)
         self.gamma = gamma
@@ -21,6 +22,7 @@ class PPOAgent:
         self.dones = []
         self.values = []
         self.device = device
+        self.writer = writer
 
     def select_action(self, obs, balance, networth, crypto_held):
         obs_tensor = torch.tensor(obs, dtype=torch.float32, device=self.device).unsqueeze(0)
@@ -109,3 +111,6 @@ class PPOAgent:
 
     def log_episode_performance(self, episode_num, total_reward, networth):
         print(f"Episode {episode_num}: Total Reward: {total_reward:.2f}, Net Worth: {networth:.2f}")
+        # Log to TensorBoard
+        self.writer.add_scalar("Total Reward", total_reward, episode_num)
+        self.writer.add_scalar("Net Worth", networth, episode_num)

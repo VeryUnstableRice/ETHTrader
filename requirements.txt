@@ -3,3 +3,4 @@ backtrader
 pandas
 numpy
 python-binance
+tensorboard
