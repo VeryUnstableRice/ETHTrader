@@ -44,7 +44,7 @@ class TradingEnv(gym.Env):
     def reset(self):
         interval_hours = self._get_interval_hours()
         steps_per_day = 24 // interval_hours
-        episode_length = 7 * steps_per_day  # 7 days per episode
+        episode_length = 30 * steps_per_day  # 7 days per episode
 
         max_start = len(self.data) - self.lookback_window_size - episode_length
         self.start_index = random.randint(self.lookback_window_size,  max_start)
@@ -75,7 +75,7 @@ class TradingEnv(gym.Env):
 
         if self.current_step >= self.end_index:
             self.done = True
-            reward = (self.total_asset - self.initial_balance) / (self.initial_balance * 0.5)
+            reward = (self.total_asset - self.initial_balance) / self.initial_balance
 
         obs = self._next_observation()
 

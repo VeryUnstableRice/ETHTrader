@@ -49,7 +49,7 @@ class PPOAgent:
             logits, value = self.policy(obs_tensor, balance_tensor, crypto_held_tensor, networth_tensor, window_tokens_tensor)
             action_probs = F.softmax(logits, dim=-1)
             total_prob_under_n_actions = action_probs[:, :self.n_actions].sum().item()
-            stop_probability = min(1.0, (2 ** num_iterations) / 1000)
+            stop_probability = min(1.0, (2 ** num_iterations) / 100000)
             delta = math.log((stop_probability / (total_prob_under_n_actions + 1e-8)) + 1e-8)
             adjusted_logits = logits.clone()
             adjusted_logits[:, :self.n_actions] += delta
@@ -73,10 +73,10 @@ class PPOAgent:
                 # Update window_tokens_tensor
                 window_tokens_tensor = torch.tensor(self.window_tokens, dtype=torch.long, device=self.device).unsqueeze(0)
                 num_iterations += 1
-                if num_iterations >= 10:
+                #if num_iterations >= 40:
                     #print("Warning: Max iterations reached in select_action")
-                    action = ((float(action_index) % self.n_actions) / (self.n_actions - 1)) * 2 - 1  # Default action
-                    return action, log_prob.item(), value.item(), action_index
+                #    action = ((float(action_index) % self.n_actions) / (self.n_actions - 1)) * 2 - 1  # Default action
+                #    return action, log_prob.item(), value.item(), action_index
 
     def store_transition(self, obs, balance, networth, crypto_held, action_index, log_prob, reward, done, value):
         self.obs_buffer.append(obs)
