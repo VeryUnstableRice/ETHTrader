@@ -55,13 +55,14 @@ if __name__ == "__main__":
 
         if done:
             agent.update(obs, balance, networth, crypto_held)
-            obs = env.reset()
 
             if episode_num % 500 == 0:
                 torch.save({'model_statedict' : trader.state_dict(), 'episode_num':episode_num}, './model.ckp')
 
             episode_num += 1
-            agent.log_episode_performance(episode_num, episode_reward, networth)
+            agent.log_episode_performance(episode_num, episode_reward, networth, env.initial_balance)
+
+            obs = env.reset()
             balance = env.balance
             networth = env.total_asset
             crypto_held = env.crypto_held

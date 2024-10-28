@@ -44,16 +44,16 @@ class TradingEnv(gym.Env):
     def reset(self):
         interval_hours = self._get_interval_hours()
         steps_per_day = 24 // interval_hours
-        episode_length = 30 * steps_per_day  # 7 days per episode
-
+        episode_length = random.randint(15, 45) * steps_per_day  # random days per episode
+        self.initial_balance = random.randint(5, 100000)
         max_start = len(self.data) - self.lookback_window_size - episode_length
         self.start_index = random.randint(self.lookback_window_size,  max_start)
         self.end_index = self.start_index + episode_length
 
         self.current_step = self.start_index
 
-        self.balance = self.initial_balance
-        self.crypto_held = 0
+        self.balance = float(self.initial_balance)
+        self.crypto_held = 0.0
         self.total_asset = self.balance
 
         self.done = False
