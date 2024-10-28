@@ -22,8 +22,12 @@ def normalize_per_batch(tensor):
     return normalized_tensor
 
 class TradingTransformer(nn.Module):
-    def __init__(self, n_actions=100, d_model=64, nhead=4, num_encoder_layers=4, dim_feedforward=256, dropout=0.1):
+    def __init__(self, n_actions=100, d_model=64, num_embeddings=128, nhead=4, num_encoder_layers=4, dim_feedforward=256, dropout=0.1):
         super(TradingTransformer, self).__init__()
+
+        self.n_actions = n_actions
+        self.num_embeddings = num_embeddings
+        self.window_embeds = nn.Embedding(num_embeddings, embedding_dim=d_model)
 
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=d_model,
@@ -49,10 +53,23 @@ class TradingTransformer(nn.Module):
         self.eth_ff = nn.Linear(d_model, d_model)
         self.networth_ff = nn.Linear(d_model, d_model)
 
-        self.policy = nn.Linear(d_model, n_actions)
-        self.value = nn.Linear(d_model, 1)
+        self.policy = nn.Sequential(
+            nn.Linear(d_model, dim_feedforward),
+            nn.GELU(),
+            nn.Linear(dim_feedforward, 128),
+            nn.GELU(),
+            nn.Linear(128, n_actions + num_embeddings)
+        )
 
-    def forward(self, obs, balance, eth, networth):
+        self.value = nn.Sequential(
+            nn.Linear(d_model, dim_feedforward),
+            nn.GELU(),
+            nn.Linear(dim_feedforward, 128),
+            nn.GELU(),
+            nn.Linear(128, 1)
+        )
+
+    def forward(self, obs, balance, eth, networth, window=None):
         obs = normalize_per_batch(obs)
         obs = obs.unsqueeze(1)  # Shape: [batch_size, 1, 50]
         obs = self.obs_conv(obs)  # Shape: [batch_size, d_model, 50]
@@ -65,7 +82,21 @@ class TradingTransformer(nn.Module):
         eth = self.eth_ff(positional_encoding(eth, d_model=self.d_model)).unsqueeze(1)
         networth = self.networth_ff(positional_encoding(networth, d_model=self.d_model)).unsqueeze(1)
 
+        # Concatenate observations with balance, eth, and networth
         x = torch.cat([obs, balance, eth, networth], dim=1)
+
+        # If window tokens are provided, embed them and concatenate along dimension 1
+        if window is not None and window.shape[1] > 0:
+            window_embed = self.window_embeds(window)  # Embed window tokens
+            x = torch.cat([x, window_embed], dim=1)  # Concatenate along dim 1
+
+        # Normalize x
+        x_min = x.amin(dim=(1, 2), keepdim=True)
+        x_max = x.amax(dim=(1, 2), keepdim=True)
+        epsilon = 1e-8
+        x = 2 * (x - x_min) / (x_max - x_min + epsilon) - 1
+
+        # Pass through transformer encoder
         x = self.transformer_encoder(x)
 
         return F.softmax(self.policy(x[:, 0, :]), dim=-1), self.value(x[:, 1, :])

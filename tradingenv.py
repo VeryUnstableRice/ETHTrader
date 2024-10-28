@@ -82,7 +82,7 @@ class TradingEnv(gym.Env):
         return obs, reward, self.done, {}
 
     def _take_action(self, action):
-        action = action[0]  # Extract the action value
+        #action = action[0]  # Extract the action value
         current_price = self.data.iloc[self.current_step]['Close']
 
         # Binance fee structure

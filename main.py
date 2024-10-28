@@ -67,7 +67,7 @@ if __name__ == "__main__":
             crypto_held = env.crypto_held
             done = False
             timestep = 0
-
+            agent.reset_window_tokens()
             episode_reward = 0
 
 writer.close()
