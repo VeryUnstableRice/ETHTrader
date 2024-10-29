@@ -31,9 +31,13 @@ if __name__ == "__main__":
 
     print(f"Total number of parameters: {sum(p.numel() for p in trader.parameters())}")
 
+    episode_num = 0
+
+    checkpoint = torch.load('./model.ckp', map_location=device)
+    trader.load_state_dict(checkpoint['model_statedict'])
+    episode_num = checkpoint.get('episode_num', 0)
     update_timestep = 2000
     timestep = 0
-    episode_num = 0
     episode_reward = 0  # Initialize episode reward
     while True:
         timestep += 1

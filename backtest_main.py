@@ -27,7 +27,7 @@ if __name__ == "__main__":
     crypto_held = env.crypto_held
     done = False
     trader = eth_trader.TradingTransformer(n_actions=action_count).to(device)
-    agent = PPOAgent(policy=trader, device=device, writer=writer)
+    agent = PPOAgent(policy=trader, device=device, writer=writer, deployed=True)
 
     # Load the saved model
     checkpoint = torch.load('./model.ckp', map_location=device)

@@ -43,10 +43,10 @@ class TradingEnv(gym.Env):
 
     def reset(self, training=True):
         if training:
-            days = random.randint(15, 45)
+            days = random.randint(15, 365)
             self.initial_balance = random.randint(5, 100000)
         else:
-            days = 365
+            days = 60
             self.initial_balance = 100
 
 
@@ -57,7 +57,7 @@ class TradingEnv(gym.Env):
         self.start_index = random.randint(self.lookback_window_size,  max_start)
 
         if not training:
-            self.start_index = max_start - days
+            self.start_index = max_start
 
         self.end_index = self.start_index + episode_length
 

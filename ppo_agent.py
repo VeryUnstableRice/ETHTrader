@@ -6,7 +6,7 @@ from torch.utils.tensorboard import SummaryWriter
 import math
 
 class PPOAgent:
-    def __init__(self, policy, device, writer, lr=3e-4, gamma=0.99, clip_epsilon=0.2, update_epochs=10, batch_size=64):
+    def __init__(self, policy, device, writer, lr=3e-4, gamma=0.99, clip_epsilon=0.2, update_epochs=10, batch_size=64, deployed=False):
         self.policy = policy
         self.optimizer = optim.Adam(self.policy.parameters(), lr=lr)
         self.gamma = gamma
@@ -27,6 +27,7 @@ class PPOAgent:
         self.device = device
         self.writer = writer
         self.n_actions = self.policy.n_actions  # Get n_actions from the policy
+        self.deployed = deployed
 
     def reset_window_tokens(self):
         self.window_tokens = []
@@ -43,40 +44,58 @@ class PPOAgent:
         else:
             window_tokens_tensor = None  # Handle this in the policy
 
-        num_iterations = 0
-        while True:
-            # Get logits and value from the policy
-            logits, value = self.policy(obs_tensor, balance_tensor, crypto_held_tensor, networth_tensor, window_tokens_tensor)
-            action_probs = F.softmax(logits, dim=-1)
-            total_prob_under_n_actions = action_probs[:, :self.n_actions].sum().item()
-            stop_probability = min(1.0, (2 ** num_iterations) / 100000)
-            delta = math.log((stop_probability / (total_prob_under_n_actions + 1e-8)) + 1e-8)
-            adjusted_logits = logits.clone()
-            adjusted_logits[:, :self.n_actions] += delta
-            action_probs_adjusted = F.softmax(adjusted_logits, dim=-1)
-            action_distribution = Categorical(action_probs_adjusted)
-            action_index = action_distribution.sample()
-            action_index = action_index.item()
-            # Log probability under the original logits
-            action_log_probs_unadjusted = F.log_softmax(logits, dim=-1)
-            log_prob = action_log_probs_unadjusted[0, action_index]
+        if self.deployed:
+            # Deployed mode: deterministic action selection
+            while True:
+                logits, value = self.policy(obs_tensor, balance_tensor, crypto_held_tensor, networth_tensor, window_tokens_tensor)
+                action_probs = F.softmax(logits, dim=-1)
+                action_index = torch.argmax(action_probs, dim=-1).item()
+                # Log probability under the original logits
+                action_log_probs_unadjusted = F.log_softmax(logits, dim=-1)
+                log_prob = action_log_probs_unadjusted[0, action_index]
+                if action_index < self.n_actions:
+                    action = (float(action_index) / (self.n_actions - 1)) * 2 - 1  # Normalize to [-1, 1]
+                    return action, log_prob.item(), value.item(), action_index
+                else:
+                    action_token = action_index - self.n_actions
+                    # Add the new token to window_tokens
+                    self.window_tokens.append(action_token)
+                    if len(self.window_tokens) > 32:
+                        self.window_tokens.pop(0)  # Remove the oldest token
+                    # Update window_tokens_tensor
+                    window_tokens_tensor = torch.tensor(self.window_tokens, dtype=torch.long, device=self.device).unsqueeze(0)
+        else:
+            # Training mode with exploration adjustments
+            num_iterations = 0
+            while True:
+                # Get logits and value from the policy
+                logits, value = self.policy(obs_tensor, balance_tensor, crypto_held_tensor, networth_tensor, window_tokens_tensor)
+                action_probs = F.softmax(logits, dim=-1)
+                total_prob_under_n_actions = action_probs[:, :self.n_actions].sum().item()
+                adjusted_logits = logits.clone()
+                if num_iterations > 32:
+                    stop_probability = min(1.0, (2 ** (num_iterations-32)) / 100000)
+                    delta = math.log((stop_probability / (total_prob_under_n_actions + 1e-8)) + 1e-8)
+                    adjusted_logits[:, :self.n_actions] += delta
+                action_probs_adjusted = F.softmax(adjusted_logits, dim=-1)
+                action_distribution = Categorical(action_probs_adjusted)
+                action_index = action_distribution.sample().item()
+                # Log probability under the original logits
+                action_log_probs_unadjusted = F.log_softmax(logits, dim=-1)
+                log_prob = action_log_probs_unadjusted[0, action_index]
 
-            if action_index < self.n_actions:
-                action = (float(action_index) / (self.n_actions - 1)) * 2 - 1  # Normalize to [-1, 1]
-                return action, log_prob.item(), value.item(), action_index
-            else:
-                action_token = action_index - self.n_actions
-                # Add the new token to window_tokens
-                self.window_tokens.append(action_token)
-                if len(self.window_tokens) > 32:
-                    self.window_tokens.pop(0)  # Remove the oldest token
-                # Update window_tokens_tensor
-                window_tokens_tensor = torch.tensor(self.window_tokens, dtype=torch.long, device=self.device).unsqueeze(0)
-                num_iterations += 1
-                #if num_iterations >= 40:
-                    #print("Warning: Max iterations reached in select_action")
-                #    action = ((float(action_index) % self.n_actions) / (self.n_actions - 1)) * 2 - 1  # Default action
-                #    return action, log_prob.item(), value.item(), action_index
+                if action_index < self.n_actions:
+                    action = (float(action_index) / (self.n_actions - 1)) * 2 - 1  # Normalize to [-1, 1]
+                    return action, log_prob.item(), value.item(), action_index
+                else:
+                    action_token = action_index - self.n_actions
+                    # Add the new token to window_tokens
+                    self.window_tokens.append(action_token)
+                    if len(self.window_tokens) > 32:
+                        self.window_tokens.pop(0)  # Remove the oldest token
+                    # Update window_tokens_tensor
+                    window_tokens_tensor = torch.tensor(self.window_tokens, dtype=torch.long, device=self.device).unsqueeze(0)
+                    num_iterations += 1
 
     def store_transition(self, obs, balance, networth, crypto_held, action_index, log_prob, reward, done, value):
         self.obs_buffer.append(obs)
