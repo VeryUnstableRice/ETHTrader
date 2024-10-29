@@ -185,7 +185,7 @@ class PPOAgent:
         self.values = []
         self.window_tokens_buffer = []
 
-    def log_episode_performance(self, episode_num, total_reward, networth, initial_balance):
-        print(f"Episode {episode_num}: Total Reward: {total_reward:.2f}, Net Worth: {networth:.2f}/{initial_balance:.2f}")
+    def log_episode_performance(self, symbol, episode_num, total_reward, networth, initial_balance):
+        print(f"Symbol: {symbol}, Episode {episode_num}: Total Reward: {total_reward:.2f}, Net Worth: {networth:.2f}/{initial_balance:.2f}")
         # Log to TensorBoard
         self.writer.add_scalar("Total Reward", total_reward, episode_num)

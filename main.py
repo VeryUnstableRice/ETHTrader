@@ -9,18 +9,36 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 writer = SummaryWriter(log_dir='./tensorboard_logs')
 
+
+# Initialize environments for multiple coins
+def create_environments(symbols, initial_balance=100, lookback_window_size=50, trading_interval='6h', use_bnb_discount=True):
+    envs = []
+
+    for symbol in symbols:
+        env = TradingEnv(
+            symbol,
+            initial_balance=initial_balance,
+            lookback_window_size=lookback_window_size,
+            trading_interval=trading_interval,
+            use_bnb_discount=use_bnb_discount
+        )
+        envs.append(env)
+
+    return envs
+
+# Function to randomly select an environment and reset it
+def select_random_env_and_reset(envs):
+    import random
+    random_env = random.choice(envs)
+    return random_env
+
 if __name__ == "__main__":
-    # Load data automatically
-    data = load_data(symbol='ETHUSDT', interval='6h')
-    # Initialize the trading environment
-    env = TradingEnv(
-        data,
-        initial_balance=100,
-        lookback_window_size=50,
-        trading_interval='6h',
-        use_bnb_discount=True
-    )
+    # Example usage:
+    symbols = ['ETHUSDT', 'BTCUSDT', 'BNBUSDT', 'ADAUSDT', 'SOLUSDT']  # Add more symbols as needed
+    environments = create_environments(symbols)
+
     action_count = 100
+    env = select_random_env_and_reset(environments)
     obs = env.reset()
     balance = env.balance
     networth = env.total_asset
@@ -64,8 +82,9 @@ if __name__ == "__main__":
                 torch.save({'model_statedict' : trader.state_dict(), 'episode_num':episode_num}, './model.ckp')
 
             episode_num += 1
-            agent.log_episode_performance(episode_num, episode_reward, networth, env.initial_balance)
+            agent.log_episode_performance(env.symbol, episode_num, episode_reward, networth, env.initial_balance)
 
+            env = select_random_env_and_reset(environments)
             obs = env.reset()
             balance = env.balance
             networth = env.total_asset

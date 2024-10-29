@@ -13,10 +13,11 @@ class TradingEnv(gym.Env):
     """
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, data, initial_balance=10000, lookback_window_size=50, trading_interval='6h', use_bnb_discount=False):
+    def __init__(self, symbol_name, initial_balance=10000, lookback_window_size=50, trading_interval='6h', use_bnb_discount=False):
         super(TradingEnv, self).__init__()
 
-        self.data = data  # The historical price data (DataFrame)
+        self.data = load_data(symbol_name, trading_interval)  # The historical price data (DataFrame)
+        self.symbol = symbol_name
         self.initial_balance = initial_balance
         self.lookback_window_size = lookback_window_size
         self.trading_interval = trading_interval
@@ -27,7 +28,7 @@ class TradingEnv(gym.Env):
 
         # Observation space: OHLCV data for the lookback window
         self.observation_space = spaces.Box(
-            low=-np.inf, high=np.inf, shape=(lookback_window_size, data.shape[1]), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(lookback_window_size, self.data.shape[1]), dtype=np.float32
         )
 
         self.reset()
@@ -86,7 +87,10 @@ class TradingEnv(gym.Env):
 
         if self.current_step >= self.end_index:
             self.done = True
-            reward = (self.total_asset - self.initial_balance) / self.initial_balance
+
+        future_price = self.data.iloc[min(len(self.data.iloc), self.current_step+5)]['Close']
+        future_total_asset = self.balance + self.crypto_held * future_price
+        reward = (future_total_asset - self.initial_balance) / self.initial_balance
 
         obs = self._next_observation()
 

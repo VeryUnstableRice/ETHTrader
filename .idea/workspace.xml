@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b2517c53-6dc3-4b7b-bbf8-b506a1876d3d" name="Changes" comment="backtesting">
+    <list default="true" id="b2517c53-6dc3-4b7b-bbf8-b506a1876d3d" name="Changes" comment="some more changes to backtest">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backtest_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtest_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ppo_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/ppo_agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tradingenv.py" beforeDir="false" afterPath="$PROJECT_DIR$/tradingenv.py" afterDir="false" />
@@ -182,7 +181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730190621097</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="some more changes to backtest">
+      <option name="closed" value="true" />
+      <created>1730193504019</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1730193504019</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -219,6 +226,7 @@
     <MESSAGE value="some small changes, it became somewhat profitable tbh, some more tests are required. Perhaps more randomness within the training data to make it be comfortable with more extreme budgets. Transformers do not extrapolate positional encoding very well" />
     <MESSAGE value="some more small randomness" />
     <MESSAGE value="backtesting" />
-    <option name="LAST_COMMIT_MESSAGE" value="backtesting" />
+    <MESSAGE value="some more changes to backtest" />
+    <option name="LAST_COMMIT_MESSAGE" value="some more changes to backtest" />
   </component>
 </project>
