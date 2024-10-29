@@ -41,13 +41,24 @@ class TradingEnv(gym.Env):
                 return num
         raise ValueError('Invalid trading_interval format')
 
-    def reset(self):
+    def reset(self, training=True):
+        if training:
+            days = random.randint(15, 45)
+            self.initial_balance = random.randint(5, 100000)
+        else:
+            days = 365
+            self.initial_balance = 100
+
+
         interval_hours = self._get_interval_hours()
         steps_per_day = 24 // interval_hours
-        episode_length = random.randint(15, 45) * steps_per_day  # random days per episode
-        self.initial_balance = random.randint(5, 100000)
+        episode_length = days * steps_per_day
         max_start = len(self.data) - self.lookback_window_size - episode_length
         self.start_index = random.randint(self.lookback_window_size,  max_start)
+
+        if not training:
+            self.start_index = max_start - days
+
         self.end_index = self.start_index + episode_length
 
         self.current_step = self.start_index

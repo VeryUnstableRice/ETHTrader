@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b2517c53-6dc3-4b7b-bbf8-b506a1876d3d" name="Changes" comment="some small changes, it became somewhat profitable tbh, some more tests are required. Perhaps more randomness within the training data to make it be comfortable with more extreme budgets. Transformers do not extrapolate positional encoding very well">
+    <list default="true" id="b2517c53-6dc3-4b7b-bbf8-b506a1876d3d" name="Changes" comment="some more small randomness">
+      <change afterPath="$PROJECT_DIR$/backtest_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ppo_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/ppo_agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tradingenv.py" beforeDir="false" afterPath="$PROJECT_DIR$/tradingenv.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,16 +33,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ppo_agent.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tradingenv.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.backtest_main.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.ppo_agent.executor": "Run",
+    "Python.tradingenv.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="ETHTrader" />
@@ -164,7 +164,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730122087555</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="some more small randomness">
+      <option name="closed" value="true" />
+      <created>1730149397476</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1730149397476</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -199,6 +207,7 @@
     <MESSAGE value="some non-locality and saving" />
     <MESSAGE value="added thinking, I think?" />
     <MESSAGE value="some small changes, it became somewhat profitable tbh, some more tests are required. Perhaps more randomness within the training data to make it be comfortable with more extreme budgets. Transformers do not extrapolate positional encoding very well" />
-    <option name="LAST_COMMIT_MESSAGE" value="some small changes, it became somewhat profitable tbh, some more tests are required. Perhaps more randomness within the training data to make it be comfortable with more extreme budgets. Transformers do not extrapolate positional encoding very well" />
+    <MESSAGE value="some more small randomness" />
+    <option name="LAST_COMMIT_MESSAGE" value="some more small randomness" />
   </component>
 </project>
